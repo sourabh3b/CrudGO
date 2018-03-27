@@ -1,16 +1,21 @@
 # CrudGO
 Basic CRUD API in Golang
 ## Installation
+
+```
 1. cd CrudGo 
 2. go run main.go
 3. Open Postman & test APIs
 4. run testcases : go test -v OR goconvey
 
+```
+```
 Note :
 1. Install Go
 2. Install Mongo
 3. Install GoConvey
 
+```
 ## Schema 
 #### User
 ```
