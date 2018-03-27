@@ -154,7 +154,6 @@ func TestGetUserByName(t *testing.T) {
 			Convey("Error returned by GetUserByName should be nil", func(){
 				So(err, ShouldBeNil)
 			})
-
 		})
 	})
 	ClearData()
