@@ -11,8 +11,6 @@ Basic CRUD API in Golang
 ```
 ```
 Note :
-This site was built using [GitHub Pages](https://pages.github.com/).
-
 
 1. [Install Go ](https://golang.org/doc/install)
 2. [Install Mongo](https://docs.mongodb.com/manual/installation/)
