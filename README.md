@@ -11,9 +11,10 @@ Basic CRUD API in Golang
 ```
 ```
 Note :
-1. Install Go
-2. Install Mongo
-3. Install GoConvey
+1. [Install Go ](https://golang.org/doc/install)
+2. [Install Mongo](https://docs.mongodb.com/manual/installation/)
+3. Install GoConvey (go get  "github.com/smartystreets/goconvey/convey")
+4. Install Logrus (go get "github.com/sirupsen/logrus")
 
 ```
 ## Schema 
