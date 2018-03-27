@@ -7,18 +7,18 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-//User - data model for a user
+//User - data model for a testUser
 type User struct {
-	UserName    string `bson:"username" json:"username"`       // username of user example :jsmith
-	DisplayName string `bson:"displayName" json:"displayName"` // displayName of user example :John Smith
-	Department  string `bson:"department" json:"department"`   // department for the user example :Sales
+	UserName    string `bson:"username" json:"username"`       // username of testUser example :jsmith
+	DisplayName string `bson:"displayName" json:"displayName"` // displayName of testUser example :John Smith
+	Department  string `bson:"department" json:"department"`   // department for the testUser example :Sales
 }
 
 
 //GetUserResponse - Get User Response
 type GetUserResponse struct {
-	DisplayName string `bson:"displayName" json:"displayName"` // displayName of user example :John Smith
-	Department  string `bson:"department" json:"department"`   // department for the user example :Sales
+	DisplayName string `bson:"displayName" json:"displayName"` // displayName of testUser example :John Smith
+	Department  string `bson:"department" json:"department"`   // department for the testUser example :Sales
 }
 
 //Response - data model for API response
@@ -32,7 +32,7 @@ type Response struct {
 //GetAllUsers -  return all users present in the database
 func GetAllUsers() ([]User, error) {
 
-	//initialising user array object to be returned when calling this function
+	//initialising testUser array object to be returned when calling this function
 	users := []User{}
 
 	session, err := mgo.Dial("127.0.0.1")
@@ -52,7 +52,7 @@ func GetAllUsers() ([]User, error) {
 //GetUserByName -  return all users present in the database
 func GetUserByName(username string) (GetUserResponse, error) {
 
-	//initialising user array object to be returned when calling this function
+	//initialising testUser array object to be returned when calling this function
 	user := User{}
 	getUserResponse := GetUserResponse{}
 
@@ -63,7 +63,7 @@ func GetUserByName(username string) (GetUserResponse, error) {
 	}
 	defer session.Close()
 
-	//mongo query to get all users in myDB database and User table
+	//mongo query to get user in myDB database and User table
 	err = session.DB("myDB").C("User").Find(bson.M{"username": username}).One(&user)
 
 	getUserResponse.Department = user.Department
@@ -74,7 +74,7 @@ func GetUserByName(username string) (GetUserResponse, error) {
 
 
 //InsertNewUser -  return all users present in the database
-func InsertNewUser(user User) ( bool,error) {
+func InsertNewUser(user User) (bool,error) {
 
 	session, err := mgo.Dial("127.0.0.1")
 	if err != nil {
@@ -83,13 +83,18 @@ func InsertNewUser(user User) ( bool,error) {
 	}
 	defer session.Close()
 
-	//check if user already exist
+	//check for empty username, Node : this condition is is also checked in handler
+	if user.UserName == "" {
+		return  false, errors.New("Empty User name")
+	}
+
+	//check if testUser already exist
 	err = session.DB("myDB").C("User").Find(bson.M{"username": user.UserName}).One(&user)
 	if err == nil {
 		return  true,nil
 	}
 
-	//mongo query to insert new user
+	//mongo query to insert new testUser
 	err = session.DB("myDB").C("User").Insert(user)
 
 	return  false, err
@@ -99,7 +104,7 @@ func InsertNewUser(user User) ( bool,error) {
 //DeleteUser -  return all users present in the database
 func DeleteUser(username string) (error) {
 
-	//initialising user array object to be returned when calling this function
+	//initialising testUser array object to be returned when calling this function
 	session, err := mgo.Dial("127.0.0.1")
 	if err != nil {
 		log.Println("Mongo error", err.Error())
@@ -107,7 +112,7 @@ func DeleteUser(username string) (error) {
 	}
 	defer session.Close()
 
-	//mongo query to get all users in myDB database and User table
+	//mongo query to remove input user from myDB database and User table
 	err = session.DB("myDB").C("User").Remove(bson.M{"username": username})
 
 	return err

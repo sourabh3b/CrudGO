@@ -227,3 +227,61 @@ Basic CRUD API in Golang
 * **Notes:**
     make sure that database is created with name myDB
     
+    
+
+
+#### Running Test cases
+
+```
+sourabh:user sourabh$ go test -v
+=== RUN   TestInsertNewUser
+
+  Testing InsertNewUser function 
+    Testing for incorrect input 
+      Testing for empty username input 
+        Error returned by InsertNewUser should not be nil ✔
+    Testing for correct input 
+      Testing for valid input (inserting test user) 
+        Error returned by InsertNewUser should be nil ✔
+
+
+2 total assertions
+
+--- PASS: TestInsertNewUser (0.01s)
+=== RUN   TestGetAllUsers
+
+  Testing GetAllUsers function 
+    Testing for valid input 
+      Error returned by GetAllUsers should be nil ✔
+      Length of users list returned by GetAllUsers should be not be nil ✔
+
+
+4 total assertions
+
+--- PASS: TestGetAllUsers (0.00s)
+=== RUN   TestGetUserByName
+
+  Testing GetUserByName function 
+    Testing for invalid input 
+      Testing for empty username 
+        Error returned by GetUserByName should be nil ✔
+    Testing for valid input 
+      Error returned by GetUserByName should be nil ✔
+
+
+6 total assertions
+
+--- PASS: TestGetUserByName (0.00s)
+=== RUN   TestDeleteUser
+
+  Testing DeleteUser function 
+    Document should be deleted after calling DeleteUser function ✔
+
+
+7 total assertions
+
+--- PASS: TestDeleteUser (0.02s)
+PASS
+ok      github.com/CrudGO/user  0.053s
+
+```
