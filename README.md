@@ -11,8 +11,7 @@ Basic CRUD API in Golang
 ```
 ```
 Note :
-Markdown and HTML are turned off in code blocks:
-<i>This is not italic</i>, and [this is not a link](http://example.com)
+
 
 1. [Install Go ](https://golang.org/doc/install)
 2. [Install Mongo](https://docs.mongodb.com/manual/installation/)
