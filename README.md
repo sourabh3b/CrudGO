@@ -10,7 +10,7 @@ Basic CRUD API in Golang
 ```
 
 
-### Objective : Developer CRUD APIs
+### API Lists
 
 #### API 1 : Get All Users 
 
