@@ -14,6 +14,13 @@ type User struct {
 	Department  string `bson:"department" json:"department"`   // department for the user example :Sales
 }
 
+
+//GetUserResponse - Get User Response
+type GetUserResponse struct {
+	DisplayName string `bson:"displayName" json:"displayName"` // displayName of user example :John Smith
+	Department  string `bson:"department" json:"department"`   // department for the user example :Sales
+}
+
 //Response - data model for API response
 type Response struct {
 	Status  int     `bson:"status" json:"status"`
@@ -43,45 +50,49 @@ func GetAllUsers() ([]User, error) {
 
 
 //GetUserByName -  return all users present in the database
-func GetUserByName(username string) (User, error) {
+func GetUserByName(username string) (GetUserResponse, error) {
 
 	//initialising user array object to be returned when calling this function
 	user := User{}
+	getUserResponse := GetUserResponse{}
 
 	session, err := mgo.Dial("127.0.0.1")
 	if err != nil {
 		log.Println("Mongo error", err.Error())
-		return user, errors.New("Mongo connection Error " + err.Error())
+		return getUserResponse, errors.New("Mongo connection Error " + err.Error())
 	}
 	defer session.Close()
 
 	//mongo query to get all users in myDB database and User table
 	err = session.DB("myDB").C("User").Find(bson.M{"username": username}).One(&user)
 
-	return user, err
+	getUserResponse.Department = user.Department
+	getUserResponse.DisplayName = user.DisplayName
+
+	return getUserResponse, err
 }
 
 
 //InsertNewUser -  return all users present in the database
-func InsertNewUser(user User) (error, bool) {
+func InsertNewUser(user User) ( bool,error) {
 
 	session, err := mgo.Dial("127.0.0.1")
 	if err != nil {
 		log.Println("Mongo error", err.Error())
-		return errors.New("Mongo connection Error " + err.Error()), false
+		return  false, errors.New("Mongo connection Error " + err.Error())
 	}
 	defer session.Close()
 
 	//check if user already exist
 	err = session.DB("myDB").C("User").Find(bson.M{"username": user.UserName}).One(&user)
 	if err == nil {
-		return nil, true
+		return  true,nil
 	}
 
 	//mongo query to insert new user
 	err = session.DB("myDB").C("User").Insert(user)
 
-	return  err, false
+	return  false, err
 }
 
 

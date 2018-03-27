@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	log "github.com/sirupsen/logrus"
 	"net/http"
 	"github.com/unrolled/render"
@@ -10,13 +9,6 @@ import (
 	"encoding/json"
 )
 
-//TestRoute - test route
-func TestRoute(w http.ResponseWriter, r *http.Request) {
-	//render := render.New()
-	fmt.Fprint(w, "Hello World !")
-	//render.JSON(w, http.StatusOK, nil)
-	return
-}
 
 /*
 GetAllUsers - §  Return a list of all users as a JSON string
@@ -26,7 +18,6 @@ e.g.:
     { "username": "jdoe", "displayName": "John Doe", "department": "Development" }]
 }
 */
-
 func GetAllUsers(w http.ResponseWriter, r *http.Request) {
 	render := render.New()
 	users,err := user.GetAllUsers()
@@ -52,10 +43,7 @@ func GetUserByName(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	username := vars["username"]
 
-	fmt.Fprintf(w, "You've requested the username: %s\n", username)
 
-
-	log.Info("username >>>>>.",username)
 	user,err := user.GetUserByName(username);
 
 	//check for error, if there is error then return 500 status code with empty user, else return status 200 with all users
@@ -91,7 +79,7 @@ func InsertUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 
-	err, exist  := user.InsertNewUser(inputUser)
+	exist, err  := user.InsertNewUser(inputUser)
 
 	//check if user already exist in the database
 	if exist {
@@ -118,9 +106,28 @@ func InsertUser(w http.ResponseWriter, r *http.Request) {
 
 //DeleteUser - test route
 func DeleteUser(w http.ResponseWriter, r *http.Request) {
-	//render := render.New()
-	fmt.Fprint(w, "Hello World !")
-	//render.JSON(w, http.StatusOK, nil)
+	render := render.New()
+
+	//getting username from the API url
+	vars := mux.Vars(r)
+	username := vars["username"]
+
+
+
+	err := user.DeleteUser(username)
+
+	deleteAPIResponse := user.Response{}
+
+	if(err != nil){
+		deleteAPIResponse.Message = "Unable to delete user into database"
+		deleteAPIResponse.Status = http.StatusNotFound
+		render.JSON(w,http.StatusNotFound, deleteAPIResponse)
+	}else{
+		deleteAPIResponse.Message = "Deleted user from database"
+		deleteAPIResponse.Status = http.StatusOK
+		render.JSON(w,http.StatusOK, deleteAPIResponse)
+	}
+
 	return
 }
 
@@ -129,13 +136,15 @@ func main() {
 
 	log.Info("Started CRUD following are the APIs available....")
 
-	//router for all APIs
-	http.HandleFunc("/test", TestRoute)
-	http.HandleFunc("/users", GetAllUsers) //Get all users present in the database
-	http.HandleFunc("/insert", InsertUser) //inserts a user into database
-	http.HandleFunc("/users/{username}", GetUserByName) //get user by user name
-	//http.HandleFunc("/users/{username}", DeleteUser) //Deletes user from database
 
-	//listening on 8889 port number
-	http.ListenAndServe(":8889", nil)
+	//router for all APIs
+	router := mux.NewRouter()
+
+
+	router.HandleFunc("/users", GetAllUsers).Methods("GET") //Get all users present in the database
+	router.HandleFunc("/users", InsertUser).Methods("POST") //inserts a user into database
+	router.HandleFunc("/users/{username}", GetUserByName).Methods("GET")
+	router.HandleFunc("/users/{username}", DeleteUser).Methods("DELETE")
+
+	log.Fatal(http.ListenAndServe(":8888", router))
 }
