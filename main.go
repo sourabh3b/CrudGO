@@ -22,7 +22,7 @@ func GetAllUsers(w http.ResponseWriter, r *http.Request) {
 	render := render.New()
 	users,err := user.GetAllUsers()
 
-	//check for error, if there is error then return 500 status code with empty user, else return status 200 with all users
+	//check for error, if there is error then return 400 status code with empty user, else return status 200 with all users
 	if(err != nil){
 		render.JSON(w,http.StatusBadRequest, users)
 	}else{
@@ -43,7 +43,6 @@ func GetUserByName(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	username := vars["username"]
 
-
 	returnedUser,err := user.GetUserByName(username);
 
 	getUserAPIResponse := user.Response{}
@@ -61,18 +60,14 @@ func GetUserByName(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-//InsertUser - test route
+//InsertUser - inserts user to database
 func InsertUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	render := render.New()
-
 	inputUser := user.User{}
-
 	insertAPIResponse := user.Response{}
-
-
 
 	//decoding the request into team, so that it can be used to save the team details
 	err := json.NewDecoder(r.Body).Decode(&inputUser)
@@ -91,9 +86,7 @@ func InsertUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-
 	exist, err  := user.InsertNewUser(inputUser)
-
 	//check if user already exist in the database
 	if exist {
 		insertAPIResponse.Message = "User already found in the database"
@@ -113,7 +106,6 @@ func InsertUser(w http.ResponseWriter, r *http.Request) {
 		render.JSON(w,http.StatusOK, insertAPIResponse)
 	}
 
-
 	return
 }
 
@@ -124,7 +116,6 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	//getting username from the API url
 	vars := mux.Vars(r)
 	username := vars["username"]
-
 	err := user.DeleteUser(username)
 
 	deleteAPIResponse := user.Response{}
@@ -144,13 +135,10 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 
 
 func main() {
-
-	log.Info("Started CRUD following are the APIs available....")
-
+	log.Info("Started CRUD following are the APIs available.... \n 1. Create New User \n 2. Update user \n 3. Get All Users")
 
 	//router for all APIs
 	router := mux.NewRouter()
-
 
 	router.HandleFunc("/users", GetAllUsers).Methods("GET") //Get all users present in the database
 	router.HandleFunc("/users", InsertUser).Methods("POST") //inserts a user into database
