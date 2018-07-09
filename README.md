@@ -1,5 +1,5 @@
 # CrudGO
-Basic CRUD API in Golang
+Basic CRUD API (https://en.wikipedia.org/wiki/Create,_read,_update_and_delete) in Golang with data stored in Mongo DB.
 ## Installation
 
 ```
@@ -11,7 +11,8 @@ Basic CRUD API in Golang
 ```
 ```
 Note :
-
+Fetching dependencies 
+$ go get github.com/smartystreets/goconvey/convey gopkg.in/mgo.v2 github.com/gorilla/mux github.com/sirupsen/logrus
 
 1. [Install Go ](https://golang.org/doc/install)
 2. [Install Mongo](https://docs.mongodb.com/manual/installation/)
